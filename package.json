@@ -1,7 +1,7 @@
 {
   "name": "webback",
   "version": "1.0.0",
-  "description": "",
+  "description": "server",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,19 @@
     "type": "git",
     "url": "https://git.unistra.fr/3a/WebBack.git"
   },
+  "keywords": [
+    "server",
+    "http"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.3",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "sequelize": "^6.17.0",
+    "sqlite3": "^5.0.2"
+  }
 }
