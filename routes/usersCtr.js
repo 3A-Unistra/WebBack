@@ -1,9 +1,11 @@
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils.js');
 var models = require('../models');
-var asyncLib = require('async');
+require('dotenv').config(); // pour accéder au .env
 
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const emailRegex =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+
 module.exports = {
     register: function(req,res) {
         var email = req.body.email;
@@ -12,7 +14,6 @@ module.exports = {
         var name = req.body.name;
 
         if (email == null || login == null || password == null || name == null) {
-            console.log(email,login,password,name);
             return res.status(400).json({'error': 'missing parameters'});
         }
 
