@@ -14,8 +14,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to kabbadj application." });
+  //res.json({ message: "Welcome to kabbadj application." });
   // res.end('Voilà la réponse du serveur !');
+  res.setHeader('content-type', 'text/html');
+  res.end('Server: Hello kabbadj !');
 });
 
 // set port, listen for requests
