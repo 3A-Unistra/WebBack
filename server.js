@@ -1,14 +1,27 @@
-// console.log("youness");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const app = express();
 
-const http = require('http');
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+app.use(cors(corsOptions));
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// req: requette
-// res: response
-// req et res sont deux fonctions qui vont être appelé a chaque lancement du serveur
-const server = http.createServer((req, res) => {
-    res.end('Voilà la réponse du serveur !');
+// simple route
+app.get("/", (req, res) => {
+  //res.json({ message: "Welcome to kabbadj application." });
+  // res.end('Voilà la réponse du serveur !');
+  res.setHeader('content-type', 'text/html');
+  res.end('Server: Hello kabbadj !');
 });
 
-//3000 numero de port par defaut dans le devloppement
-//on ajoute la var env au cas ou le port 3000 et indispo
-server.listen(process.env.PORT || 3000);
+// set port, listen for requests
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
