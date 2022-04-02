@@ -39,7 +39,7 @@ module.exports = {
                         return res.status(201).json( {'username': newUser.id})
                     })
                     .catch(function(err) {
-                        return res.status(500).json({'error': 'cannot add user'});
+                        return res.status(500).json({'error': 'cannot find user'});
                     })
                 })
 

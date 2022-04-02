@@ -1,14 +1,15 @@
 {
-  "development": {
-    "dialect": "sqlite",
-    "storage": "bdd.sqlite3"
-  },
-  "test": {
-    "dialect": "sqlite",
-    "storage": "bdd.sqlite3"
-  },
-  "production": {
-    "dialect": "sqlite",
-    "storage": "bdd.sqlite3"
+    "development": {
+      "dialect": "sqlite",
+      "storage": "bdd.sqlite3"
+    },
+    "test": {
+      "dialect": "sqlite",
+      "storage": "bdd.sqlite3"
+    },
+    "production": {
+      "dialect": "sqlite",
+      "storage": "bdd.sqlite3"
+    }
   }
-}
+  
