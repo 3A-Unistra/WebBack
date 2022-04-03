@@ -1,27 +1,23 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const app = express();
+require('dotenv').config(); // pour accéder au .env
 
-var corsOptions = {
-  origin: "http://localhost:3000"
-};
-app.use(cors(corsOptions));
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+var express = require('express');
+var bodyParser = require('body-parser');
+var cors = require('cors');
+var apiRouter = require('./apiRouter').router;
 
-// simple route
-app.get("/", (req, res) => {
-  //res.json({ message: "Welcome to kabbadj application." });
-  // res.end('Voilà la réponse du serveur !');
-  res.setHeader('content-type', 'text/html');
-  res.end('Server: Hello kabbadj !');
+var server = express();
+server.use(cors());
+server.use(bodyParser.urlencoded({extended:true}));
+server.use(bodyParser.json());
+
+server.get('/',function(req,res) {
+    res.setHeader('Content-Type','text/html');
+    res.status(200).send('<h1> lien du serveur</h1>');
 });
 
-// set port, listen for requests
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+server.use('/api/', apiRouter);
+
+
+server.listen(3000, function() {
+    console.log('serveur a démarré');
 });
