@@ -1,7 +1,7 @@
 # WebBack STRASSPOLY
+
 ## Installation des Packages:
 -------------
-`npm init`
 
 `sudo npm install -g sequelize-cli`
 
