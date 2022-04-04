@@ -7,7 +7,7 @@ exports.router = (function() {
 
     apiRouter.route('/users/register').post(usersCtr.register);
     apiRouter.route('/users/login').post(usersCtr.login);
-
+    apiRouter.route('/users/edit').post(usersCtr.changeNamePawn);
     return apiRouter;
 
 })();
