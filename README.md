@@ -3,7 +3,7 @@
 -------------
 `npm init`
 
-`npm install -g sequelize-cli`
+`sudo npm install -g sequelize-cli`
 
 `npm install express ejs`
 
@@ -14,6 +14,13 @@
 `npm install cors`
 
 `npm install body-parser`
+
+`npm install axios`
+
+`npm install dotenv`
+
+
+
 
 
 ## Pour la création de la bd:
