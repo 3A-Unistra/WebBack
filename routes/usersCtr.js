@@ -12,7 +12,7 @@ module.exports = {
         var login = req.body.login;
         var password = req.body.password;
         var name = req.body.name;
-
+        console.log(process.env.NODE_ENV)
         if (email == null || login == null || password == null || name == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -39,6 +39,7 @@ module.exports = {
                         return res.status(201).json( {'username': newUser.id})
                     })
                     .catch(function(err) {
+                        console.log(err)
                         return res.status(500).json({'error': 'cannot find user'});
                     })
                 })
