@@ -46,21 +46,20 @@ module.exports = {
         allowNull: false,
         type: Sequelize.UUID
       }
-    }).then(() => queryInterface.addConstraint('Users_password_reset_token',{
+    }).then(() => queryInterface.addConstraint('User_password_reset_token',{
         type: 'foreign key',
         name: 'user_id_fk',
         fields: ['user_id'],
         references: {
           table: 'Users',
           field: 'id'
-        },
-        onDelete: 'CASCADE'
+        }
       }
     ))
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
-    await queryInterface.dropTable('Users_password_reset_token');
+    await queryInterface.dropTable('User_password_reset_token');
     await queryInterface.removeConstraint('User_password_reset_token', 'user_id_fk');
   }
 };
