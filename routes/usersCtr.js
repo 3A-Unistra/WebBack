@@ -85,5 +85,49 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
+    },
+
+    isFollow: function(req,res) {
+        var ownUsername = req.body.ownName;
+        var otherUsername = req.body.otherName;
+        var id;
+
+        if (ownUsername == null || otherUsername == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.Users.findOne({
+            where: { name: ownUsername}
+        })
+        .then(function(userFound) {
+            if(userFound) {
+                return res.status(201).json( {'username': userFound.id})
+            }else {
+                return res.status(404).json({'error': 'user not in database'});
+            }
+        })
+        .catch(function(err){
+            return res.status(500).json({ 'error': 'unable to verify user'});
+        });
     }
+        /*models.Users.findOne({
+            attributes: ['login'], // change ce qui est cherché dans la requête
+            where: { login: 'ra'}
+        })
+        .then(function(userFound) {
+            id = userFound.id
+            models.Users_friends.findOne({
+                where: { user_id:id } // on cherche l'id de la personne dans la table d'amis
+            })
+            .then(function () {
+                return true
+            })
+            .catch(function(err) {
+                return res.status(411).json({'error': 'pas encore amis '});
+            })
+        })
+        .catch(function(err) {
+            return res.status(412).json({'error': ownUsername+' not found'});
+        });
+    }*/
 }

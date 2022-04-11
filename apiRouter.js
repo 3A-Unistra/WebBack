@@ -7,6 +7,7 @@ exports.router = (function() {
 
     apiRouter.route('/users/register').post(usersCtr.register);
     apiRouter.route('/users/login').post(usersCtr.login);
+    apiRouter.route('/users/is_follow').post(usersCtr.isFollow);
 
     return apiRouter;
 
