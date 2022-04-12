@@ -13,8 +13,6 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-  let p1 = "", p2 = "";
-
   return queryInterface.bulkInsert('Users', [{
     id: uuidv4.v4(),
     login: 'DarkGeo67',
