@@ -4,8 +4,25 @@ var models = require('../models');
 require('dotenv').config(); // pour accéder au .env
 
 const emailRegex =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+/*
+IdFinder: function(username) {
+    var id;
 
+    if(username == null) {
+        return res.status(400).json({'error': 'missing username'});  
+    }
+    models.Users.findOne({
+        where: { name: username}
+    })
+    .then(function(userFound) {
+        id = userFound.id
+        return id;
+    })
+    .catch(function(err) {
+        return res.status(422).json({ 'error': 'user not found'});           
+    })
 
+},*/
 module.exports = {
     register: function(req,res) {
         var email = req.body.email;
@@ -86,11 +103,12 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
     },
+    
 
-    isFollow: function(req,res) {
+    getIds: function(req,res) {
         var ownUsername = req.body.ownName;
         var otherUsername = req.body.otherName;
-        var id;
+        var ownId,otherId;
 
         if (ownUsername == null || otherUsername == null) {
             return res.status(400).json({'error': 'missing parameters'});
@@ -101,33 +119,63 @@ module.exports = {
         })
         .then(function(userFound) {
             if(userFound) {
-                return res.status(201).json( {'username': userFound.id})
+                ownId = userFound.id
+
+                models.Users.findOne({
+                    where: { name: otherUsername}
+                })
+                .then(function(otherUserFound) {
+                        otherId = otherUserFound.id
+                        return res.status(201).json( {
+                            'ownId': ownId,
+                            'otherId': otherId
+                        })
+                })
+                .catch(function(err) {
+                    return res.status(423).json({ 'error': otherUsername+' not found'});
+                })
             }else {
                 return res.status(404).json({'error': 'user not in database'});
             }
         })
         .catch(function(err){
-            return res.status(500).json({ 'error': 'unable to verify user'});
+            return res.status(507).json({ 'error': 'unable to verify user'});
         });
-    }
-        /*models.Users.findOne({
-            attributes: ['login'], // change ce qui est cherché dans la requête
-            where: { login: 'ra'}
+    },
+
+    isFollow: function(req,res) {
+        var ownId = req.body.ownId;
+        var otherId = req.body.otherId;
+
+        if (ownId == null || otherId == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.User_friends.findOne({
+            where: { 
+                user_id: ownId,
+                friend_id: otherId
+            }
         })
-        .then(function(userFound) {
-            id = userFound.id
-            models.Users_friends.findOne({
-                where: { user_id:id } // on cherche l'id de la personne dans la table d'amis
-            })
-            .then(function () {
-                return true
-            })
-            .catch(function(err) {
-                return res.status(411).json({'error': 'pas encore amis '});
-            })
+        .then(function(relationFound) {
+            return res.status(201).json( {'id': relationFound.id})
         })
         .catch(function(err) {
-            return res.status(412).json({'error': ownUsername+' not found'});
-        });
+            return res.status(413).json({ 'error': 'relation not found'});
+        })
+    }
+
+
+   /* isFollow: function(req,res) {
+        var ownUsername = req.body.ownName;
+        var otherUsername = req.body.otherName;
+        var ownId,otherId;
+
+        if (ownUsername == null || otherUsername == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+        ownId = IdFinder(ownUsername)
+        otherId = IdFinder(otherUsername)
+        return res.status(201).json( {'ownId': ownId +" and otherid "+ otherId })
     }*/
 }
