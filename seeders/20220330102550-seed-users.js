@@ -17,15 +17,11 @@ module.exports = {
     name: 'Geoffrey',
     password: 'motdepasse',
     email: 'geoffrey@gmail.com',
-    createdAt: new Date().toDateString(),
-    updatedAt: new Date().toDateString()
   }, {
     login: 'XxAmauryxX',
     name: 'Amaury',
     password: 'encoreamaury',
     email: 'lemauetlery@gmail.com',
-    createdAt: new Date().toDateString(),
-    updatedAt: new Date().toDateString()
   }], {});
 },
 
