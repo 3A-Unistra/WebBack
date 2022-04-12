@@ -1,6 +1,7 @@
 'use strict';
 
 const uuidv4 = require('uuid');
+const bcrypt = require("bcrypt");
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -12,12 +13,13 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+  let p1 = "", p2 = "";
 
   return queryInterface.bulkInsert('Users', [{
     id: uuidv4.v4(),
     login: 'DarkGeo67',
     name: 'Geoffrey',
-    password: 'motdepasse',
+    password: bcrypt.hashSync('motdepasse', 5),
     email: 'geoffrey@gmail.com',
     piece: 0,
     avatar: ''
@@ -25,7 +27,7 @@ module.exports = {
     id: uuidv4.v4(),
     login: 'XxAmauryxX',
     name: 'Amaury',
-    password: 'encoreamaury',
+    password: bcrypt.hashSync('encoreamaury', 5),
     email: 'lemauetlery@gmail.com',
     piece: 0,
     avatar: ''
