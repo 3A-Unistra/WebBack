@@ -35,7 +35,7 @@ module.exports = {
     await queryInterface.createTable('User_friends',{
       id: {
         type: Sequelize.INTEGER,
-        defaultValue: Sequelize.UUIDV4,
+        //defaultValue: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,

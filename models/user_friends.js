@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   User_friends.init({
     id: {
       type: DataTypes.INTEGER,
-      defaultValue: DataTypes.UUIDV4,
+      //defaultValue: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
       autoIncrement: true

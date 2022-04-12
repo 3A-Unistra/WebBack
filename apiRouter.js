@@ -9,6 +9,10 @@ exports.router = (function() {
     apiRouter.route('/users/login').post(usersCtr.login);
     apiRouter.route('/users/get_ids').post(usersCtr.getIds);
     apiRouter.route('/users/is_follow').post(usersCtr.isFollow);
+    apiRouter.route('/users/follow').post(usersCtr.Follow);
+    apiRouter.route('/users/unfollow').post(usersCtr.Unfollow);
+
+
 
     return apiRouter;
 
