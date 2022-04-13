@@ -85,7 +85,28 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
     },
+    getUserProfile: function(req, res) {
+        var username = req.body.username;
 
+        if(username == null){
+            return res.status(401).json({'error': 'missing parameters'});
+        }
+        models.Users.findOne({
+        where: { name: username }
+        })
+        .then (function(profileInfo){
+            usernameToShow = profileInfo.name
+            return res.status(201).json({
+                'username': profileInfo.name,
+                'login' : profileInfo.login,
+                'pawn' : profileInfo.piece
+            }) 
+        })
+        .catch(function(err){
+            return res.status(500).json({ 'error': 'cannot fetch user' });
+        });
+    },
+    
     changeNamePawn: function(req,res) {
         var newLogin = req.body.login;
         var newPawn = req.body.pawn;
@@ -119,5 +140,5 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
     }
-
+    
 }
