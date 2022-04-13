@@ -5,14 +5,13 @@ require('dotenv').config(); // pour accéder au .env
 
 const emailRegex =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-
 module.exports = {
     register: function(req,res) {
         var email = req.body.email;
         var login = req.body.login;
         var password = req.body.password;
         var name = req.body.name;
-
+        console.log(process.env.NODE_ENV)
         if (email == null || login == null || password == null || name == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -39,6 +38,7 @@ module.exports = {
                         return res.status(201).json( {'username': newUser.id})
                     })
                     .catch(function(err) {
+                        console.log(err)
                         return res.status(500).json({'error': 'cannot find user'});
                     })
                 })
@@ -84,5 +84,124 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
+    },
+    
+
+    getIds: function(req,res) {
+        var ownUsername = req.body.ownName;
+        var otherUsername = req.body.otherName;
+        var ownId,otherId;
+
+        if (ownUsername == null || otherUsername == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.Users.findOne({
+            where: { name: ownUsername}
+        })
+        .then(function(userFound) {
+            if(userFound) {
+                ownId = userFound.id
+
+                models.Users.findOne({
+                    where: { name: otherUsername}
+                })
+                .then(function(otherUserFound) {
+                        otherId = otherUserFound.id
+                        return res.status(201).json( {
+                            'ownId': ownId,
+                            'otherId': otherId
+                        })
+                })
+                .catch(function(err) {
+                    return res.status(423).json({ 'error': otherUsername+' not found'});
+                })
+            }else {
+                return res.status(404).json({'error': 'user not in database'});
+            }
+        })
+        .catch(function(err){
+            return res.status(507).json({ 'error': 'unable to verify user'});
+        });
+    },
+
+    isFollow: function(req,res) {
+        var ownId = req.body.ownId;
+        var otherId = req.body.otherId;
+
+        if (ownId == null || otherId == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.User_friends.findOne({
+            where: { 
+                user_id: ownId,
+                friend_id: otherId
+            }
+        })
+        .then(function(relationFound) {
+            return res.status(201).json( {'id': relationFound.id})
+        })
+        .catch(function(err) {
+            return res.status(413).json({ 'error': 'relation not found'});
+        })
+    },
+
+    Follow: function(req,res) {
+        var ownId = req.body.ownId;
+        var otherId = req.body.otherId;
+
+        if (ownId == null || otherId == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.User_friends.findOne({
+            where: { 
+                user_id: ownId,
+                friend_id: otherId
+            }
+        })
+        .then(function(relationFound) {
+            if(!relationFound) {
+                var newFollow = models.User_friends.create({
+                    friend_id: otherId,
+                    user_id: ownId,
+                })
+                return res.status(201).json( {'username': newFollow.id})
+            } else {
+                return res.status(550).json({'error': ' already a relation'});
+            }
+        })
+        .catch(function(err) {
+            return res.status(413).json({ 'error': 'relation not found'});
+        })
+    },
+    
+    Unfollow: function(req,res) {
+        var ownId = req.body.ownId;
+        var otherId = req.body.otherId;
+
+        if (ownId == null || otherId == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.User_friends.findOne({
+            where: { 
+                user_id: ownId,
+                friend_id: otherId
+            }
+        })
+        .then(function() {
+            models.User_friends.destroy({
+                where: { 
+                    user_id: ownId,
+                    friend_id: otherId
+                }
+            })
+            return res.status(202).json( {'friendship': "gone"})
+        })
+        .catch(function(err) {
+            return res.status(555).json({'error': 'cannot find relation'});
+        })
     }
 }

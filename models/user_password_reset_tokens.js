@@ -2,7 +2,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Users extends Model {
+  class User_password_reset_tokens extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,25 +10,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User_password_reset_tokens.belongsTo(models.Users, {foreignKey: 'user_id'});
     }
   }
-  Users.init({
+  User_password_reset_tokens.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false
     },  
-    login: DataTypes.STRING,
-    name: DataTypes.STRING,
-    password: DataTypes.STRING,
-    email: DataTypes.STRING,
-    piece: DataTypes.INTEGER,
-    avatar: DataTypes.STRING
+    date: DataTypes.DATE,
+    user_id : {
+      type: DataTypes.UUID,
+      references: {
+          table: 'Users',
+          key: 'id'
+      }
+    }
   }, {
     sequelize,
-    modelName: 'Users',
+    modelName: 'User_password_reset_tokens',
     timestamps: false
   });
-  return Users;
+  return User_password_reset_tokens;
 };

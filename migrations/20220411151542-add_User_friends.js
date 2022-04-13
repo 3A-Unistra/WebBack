@@ -1,0 +1,90 @@
+'use strict';
+
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    await queryInterface.createTable('Users', {
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+        primaryKey: true
+      },
+      login: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      email: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      password: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      piece: {
+        type: Sequelize.INTEGER
+      },
+      avatar: {
+        type: Sequelize.STRING
+      }
+    });
+    await queryInterface.createTable('User_friends',{
+      id: {
+        type: Sequelize.INTEGER,
+        //defaultValue: Sequelize.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      friend_id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+      },
+      user_id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+
+      }
+    });
+    await queryInterface.createTable('User_password_reset_token', {
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+        primaryKey: true
+      },
+      date: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      user_id: {
+        allowNull: false,
+        type: Sequelize.UUID
+      }
+    });
+    /**
+     * Add altering commands here.
+     *
+     * Example:
+     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
+     */
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('User_password_reset_token');
+    await queryInterface.dropTable('User_friends');
+   
+   /*  * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
+  }
+};
