@@ -54,16 +54,16 @@ module.exports = {
     },
 
     login: function(req,res) {
-        var login = req.body.login;
+        var username = req.body.username;
         var password = req.body.password;
 
-        if (login == null || password == null) {
+        if (username == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
 
         //regex mdr
         models.Users.findOne({
-            where: { login: login}
+            where: { name: username}
         })
         .then(function(userFound) {
             if(userFound) {
