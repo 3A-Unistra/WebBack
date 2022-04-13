@@ -11,9 +11,8 @@ exports.router = (function() {
     apiRouter.route('/users/is_follow').post(usersCtr.isFollow);
     apiRouter.route('/users/follow').post(usersCtr.Follow);
     apiRouter.route('/users/unfollow').post(usersCtr.Unfollow);
-
-
-
+    apiRouter.route('/users/getProfile').post(usersCtr.getUserProfile);
+    apiRouter.route('/users/editProfile').post(usersCtr.changeNamePawn);
     return apiRouter;
 
 })();

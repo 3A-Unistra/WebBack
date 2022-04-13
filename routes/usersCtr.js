@@ -54,16 +54,16 @@ module.exports = {
     },
 
     login: function(req,res) {
-        var login = req.body.login;
+        var name = req.body.name;
         var password = req.body.password;
 
-        if (login == null || password == null) {
+        if (name == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
 
         //regex mdr
         models.Users.findOne({
-            where: { login: login}
+            where: { name: name}
         })
         .then(function(userFound) {
             if(userFound) {
@@ -84,8 +84,7 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
-    },
-    
+    },    
 
     getIds: function(req,res) {
         var ownUsername = req.body.ownName;
@@ -203,5 +202,61 @@ module.exports = {
         .catch(function(err) {
             return res.status(555).json({'error': 'cannot find relation'});
         })
+    },
+    getUserProfile: function(req, res) {
+        var username = req.body.username;
+
+        if(username == null){
+            return res.status(401).json({'error': 'missing parameters'});
+        }
+        models.Users.findOne({
+        where: { name: username }
+        })
+        .then (function(profileInfo){
+            usernameToShow = profileInfo.name
+            return res.status(201).json({
+                'username': profileInfo.name,
+                'login' : profileInfo.login,
+                'pawn' : profileInfo.piece
+            }) 
+        })
+        .catch(function(err){
+            return res.status(500).json({ 'error': 'cannot fetch user' });
+        });
+    },
+    
+    changeNamePawn: function(req,res) {
+        var newLogin = req.body.login;
+        var newPawn = req.body.pawn;
+        var username = req.body.username;
+
+        if (username == null) {
+            return res.status(400).json({'error': 'not in database'});
+        }
+
+        if (newLogin == null || newPawn == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+
+        //regex mdr
+        models.Users.findOne({
+            where: { name: username},
+        })
+        .then(function(userFound) {
+            if(userFound) {
+                userFound.update({
+                    login: newLogin,
+                    piece: newPawn
+                })}
+                else {
+                return res.status(404).json({'error': 'user not in database'});
+            }
+        })
+        
+        .catch(function(err){
+            return res.status(500).json({ 'error': 'unable to verify user'});
+        });
     }
 }
+    
