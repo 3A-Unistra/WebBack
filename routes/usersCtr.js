@@ -116,7 +116,31 @@ module.exports = {
                     return res.status(423).json({ 'error': otherUsername+' not found'});
                 })
             }else {
-                return res.status(404).json({'error': 'user not in database'});
+                return res.status(417).json({'error': 'user not in database'});
+            }
+        })
+        .catch(function(err){
+            return res.status(507).json({ 'error': 'unable to verify user'});
+        });
+    },
+
+    getOwnId: function(req,res) {
+        var ownUsername = req.body.name;
+        var ownId;
+
+        if (ownUsername == null) {
+            return res.status(400).json({'error': 'missing parameters'});
+        }
+
+        models.Users.findOne({
+            where: { name: ownUsername}
+        })
+        .then(function(userFound) {
+            if(userFound) {
+                ownId = userFound.id
+                return res.status(201).json( {'ownId': ownId}) // renvoie son propre id
+            } else {
+                return res.status(400).json({'error': 'user not in database'});
             }
         })
         .catch(function(err){
@@ -250,7 +274,7 @@ module.exports = {
                     piece: newPawn
                 })}
                 else {
-                return res.status(404).json({'error': 'user not in database'});
+                return res.status(401).json({'error': 'user not in database'});
             }
         })
         
