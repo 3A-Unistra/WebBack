@@ -14,6 +14,10 @@ exports.router = (function() {
     apiRouter.route('/users/unfollow').post(usersCtr.Unfollow);
     apiRouter.route('/users/getProfile').post(usersCtr.getUserProfile);
     apiRouter.route('/users/editProfile').post(usersCtr.changeNamePawn);
+    apiRouter.route('/users/forget').post(usersCtr.forgot);
+    apiRouter.route('/users/reset/:token').get(usersCtr.reset);
+    apiRouter.route('/users/reset/:token').post(usersCtr.confirmedPasswords);
+    apiRouter.route('/users/reset/:token').post(usersCtr.Update);
     return apiRouter;
 
 })();

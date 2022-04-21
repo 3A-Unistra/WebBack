@@ -52,7 +52,7 @@ module.exports = {
 
       }
     });
-    await queryInterface.createTable('User_password_reset_token', {
+    await queryInterface.createTable('User_password_reset_tokens', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -78,7 +78,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
-    await queryInterface.dropTable('User_password_reset_token');
+    await queryInterface.dropTable('User_password_reset_tokens');
     await queryInterface.dropTable('User_friends');
    
    /*  * Add reverting commands here.
