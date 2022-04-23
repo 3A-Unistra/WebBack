@@ -18,6 +18,6 @@ server.get('/',function(req,res) {
 server.use('/api/', apiRouter);
 
 
-server.listen(3000, function() {
+server.listen(process.env.API_PORT, function() {
     console.log('serveur a démarré');
 });
