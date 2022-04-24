@@ -1,7 +1,9 @@
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils.js');
 var models = require('../models');
-const mail = require('../H/mail.js')
+const mail = require('../H/mail.js');
+const Sequelize = require ('sequelize');
+const Op = Sequelize.Op; 
 require('dotenv').config(); // pour accéder au .env
 
 const emailRegex =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -283,8 +285,15 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
     },
-    forgot: async(req,res)=>{    
-        const users = await models.Users.findOne({email: req.body.email })
+    forgot: async(req,res, next)=>{    
+        const users = await models.Users.findOne({email: req.body.email})
+        /*.then (function(userFound){
+            next();
+            return;
+        })
+        .catch(function(err){
+            return res.status(507).json({ 'error': 'mail existe pas'});
+        })*/
         if (!users){
             return res.status(404).json({ 'error': 'No account with this mail exits'});
             
@@ -293,8 +302,10 @@ module.exports = {
         if (token){
             await token.destroy();
         }
+        var expireDate = new Date ();
+        expireDate.setDate (expireDate.getMinutes () + 1);
         token = await models.User_password_reset_tokens.create({
-            date: Date.now()+360000,
+            date: Date.now() +6000000, //valide pendant 10 minute
             user_id: users.id
          })
         //3.send them an email with token 
@@ -304,36 +315,42 @@ module.exports = {
             users:users,
             subject: 'Password Reset',
             resetURL:resetURL,
-            html:`<a href= "${resetURL}" >cliquer ici pour reunitialisé </a>`,
+            html:`<h1>Lien de modification de mot de passe </h1> <p>vous avez demanee de modifier votre mot de passe merci de clique sur lien </p> <a href= "${resetURL}" >cliquer sur le lien </a>`,
             text:resetURL 
         });
         return res.status(200).json({ 'success': 'you have been emailed a password reset link'});
             //4 redirect page de login 
     },
     reset: async(req,res)=>{
-        const tokens = await models.User_password_reset_tokens.findOne({
-            id:req.body.token
-            //date: Date.now()
+        var verif= req.body.token;
+        models.User_password_reset_tokens.findOne({
+            where :{id:verif}
+        })
+        .then (function(userFound){
+        })
+        .catch(function(err){
+            return res.status(507).json({ 'error': 'token existe pas  '});
         })
 
-        if (!tokens){
+       /* if (!tokens){
             res.status(200).json({ 'error': 'youeen  link'});
         }
-        res.status(200).json({ 'succes': 'lien valide'});
+        res.status(200).json({ 'succes': 'lien valide'});*/
     },
     confirmedPasswords : async(req,res,next) => {
         if (req.body.password === req.body['confirmpassword']){
             next();
             return;
         }
-        res.status(200).json({ 'error': 'verifie le mot de pass'});
+        //res.status(200).json({ 'error': 'verifie le mot de pass'});
     },
    Update : async(req,res) =>{
        var mot = req.body.password;
+       let expiry = Date.now() +0 ;
         models.User_password_reset_tokens.findOne({where:{
-            id:req.body.token
+            id:req.body.token,
+            date: {[Op.gt]: expiry}
             }})
-
             .then(function(relationfound){
                 models.Users.findOne({where:{id : relationfound.user_id  }
                 })
@@ -341,7 +358,7 @@ module.exports = {
                         if(relationfoundd){
                             bcrypt.hash(mot, 5, function(err, bcryptedPassword) {
                                 relationfoundd.update({
-                                    password:mot
+                                    password:bcryptedPassword
                                 })
                                 .then(function() {
                                     return res.status(201).json( 'success')
@@ -353,13 +370,13 @@ module.exports = {
                             })
                         }
                         else {
-                         return res.status(200).json({ 'success': ' probleme de changement'});
+                         return res.status(200).json({ 'success': 'probleme de changement'});
                         }
                     })
             })
 
             .catch(function(err){
-                return res.status(507).json({ 'error': 'mchkile find one lewle '});
+                return res.status(507).json({ 'error': 'link invalide or expired'});
         })
     }
 }
