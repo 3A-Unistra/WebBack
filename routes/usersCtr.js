@@ -11,7 +11,6 @@ module.exports = {
         var login = req.body.login;
         var password = req.body.password;
         var name = req.body.name;
-        console.log(process.env.NODE_ENV)
         if (email == null || login == null || password == null || name == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -138,7 +137,7 @@ module.exports = {
         .then(function(userFound) {
             if(userFound) {
                 ownId = userFound.id
-                return res.status(201).json( {'ownId': ownId}) // renvoie son propre id
+                return res.status(201).json({'ownId': ownId}) // renvoie son propre id
             } else {
                 return res.status(400).json({'error': 'user not in database'});
             }
@@ -229,12 +228,17 @@ module.exports = {
     },
     getUserProfile: function(req, res) {
         var username = req.body.username;
+        var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
 
         if(username == null){
             return res.status(401).json({'error': 'missing parameters'});
         }
+        if(!testToken){
+            return res.status(401).json({'error': 'not allowed', 'header value': req.headers['authorization']});
+        }
+       
         models.Users.findOne({
-        where: { name: username }
+        where: { name: "ra" } // name: username à remettre
         })
         .then (function(profileInfo){
             usernameToShow = profileInfo.name

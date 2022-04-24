@@ -1,18 +1,45 @@
 var jwt = require('jsonwebtoken');
+const { user } = require('pg/lib/defaults');
 require('dotenv').config(); // pour accéder au .env
 
-const JWT_SIGN_SECRET = process.env.JWT_TOKEN;
+const JWT_SIGN_ACCESS = process.env.ACCESS_TOKEN;
+const JWT_SIGN_REFRESH = process.env.REFRESH_TOKEN;
+
 module.exports = {
     generateTokenForUser: function(userData) {
         return jwt.sign( {
             //mettre ici ce qu'on veut recupérer du token
-            userId: userData.id
+            userData
         },
-        JWT_SIGN_SECRET,
+        JWT_SIGN_ACCESS,
         {
-            expiresIn: '1h'
+            expiresIn: '10s'
         })
     },
+    generateRefreshTokenForUser: function(userData) {
+        return jwt.sign( {
+            //mettre ici ce qu'on veut recupérer du token
+            userData
+        },
+        JWT_SIGN_REFRESH,
+        {
+            expiresIn: '1y'
+        })
+    },
+    authenticateToken: function(authHeader) {
+      const token = authHeader && authHeader.split(' ')[1]
+    
+      if (token == 'null') return false;
+    
+      jwt.verify(token, process.env.ACCESS_TOKEN, (err,decoded) => {
+        if (err) {
+          return false;
+        }
+      });
+      return true;
+    }
+
+    /*
     parseAuthorization: function(authorization) {
         return (authorization != null) ? authorization.replace('Bearer ', '') : null;
     },
@@ -27,5 +54,21 @@ module.exports = {
           } catch(err) { }
         }
         return userId;
-    }
+    },
+
+     authenticateToken: function(req, res, next) {
+        const authHeader = req.headers['Authorization']
+        const token = authHeader && authHeader.split(' ')[1]
+      
+        if (token == null) return res.sendStatus(401)
+      
+        jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
+          if (err) {
+            return res.sendStatus(401)
+          }
+          req.user = user;
+          next();
+        });
+      }*/
+      
 }

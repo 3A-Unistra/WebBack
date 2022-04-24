@@ -1,4 +1,8 @@
 require('dotenv').config(); // pour accéder au .env
+var jwtUtils = require('./utils/jwt.utils'); // a enlever apres test
+var models = require('./models'); // pareil
+
+
 
 var express = require('express');
 var bodyParser = require('body-parser');
