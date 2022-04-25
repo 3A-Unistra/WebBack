@@ -225,9 +225,11 @@ module.exports = {
         .catch(function(err) {
             return res.status(555).json({'error': 'cannot find relation'});
         })
-    },
+    },/*
     getUserProfile: function(req, res) {
         var username = req.body.username;
+        var username = req.body.username;
+
         var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
 
         if(username == null){
@@ -242,6 +244,28 @@ module.exports = {
         })
         .then (function(profileInfo){
             usernameToShow = profileInfo.name
+            return res.status(201).json({
+                'username': profileInfo.name,
+                'login' : profileInfo.login,
+                'pawn' : profileInfo.piece
+            }) 
+        })
+        .catch(function(err){
+            return res.status(500).json({ 'error': 'cannot fetch user' });
+        });
+    },*/
+    getUserProfile: function(req, res) {
+        
+        var idDuBoug = req.body.idDuBoug;
+
+
+        if(idDuBoug == null){
+            return res.status(401).json({'error': 'missing parameters'});
+        }
+        models.Users.findOne({
+        where: { id: idDuBoug }
+        })
+        .then (function(profileInfo){
             return res.status(201).json({
                 'username': profileInfo.name,
                 'login' : profileInfo.login,
