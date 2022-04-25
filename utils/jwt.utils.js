@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 require('dotenv').config(); // pour accéder au .env
 
-const JWT_SIGN_SECRET = process.env.JWT_TOKEN;
+const JWT_SIGN_SECRET = process.env.ACCESS_TOKEN;
 module.exports = {
     generateTokenForUser: function(userData) {
         return jwt.sign( {
