@@ -68,9 +68,11 @@ module.exports = {
             if(userFound) {
                 bcrypt.compare(password,userFound.password, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
+                        const token = jwtUtils.generateTokenForUser(userFound)
                         return res.status(200).json({
                             'userid': userFound.id,
-                            'token': jwtUtils.generateTokenForUser(userFound)
+                            'token': token,
+                            'date expiration': token.expiresIn
                         });
                     } else {
                         return res.status(403).json({'error':'invalid password'});
@@ -83,7 +85,8 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
-    },    
+    },
+    
 
     getIds: function(req,res) {
         var ownUsername = req.body.ownName;
@@ -225,9 +228,8 @@ module.exports = {
         .catch(function(err) {
             return res.status(555).json({'error': 'cannot find relation'});
         })
-    },/*
+    },
     getUserProfile: function(req, res) {
-        var username = req.body.username;
         var username = req.body.username;
 
         var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
@@ -253,29 +255,8 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'cannot fetch user' });
         });
-    },*/
-    getUserProfile: function(req, res) {
-        
-        var idDuBoug = req.body.idDuBoug;
-
-
-        if(idDuBoug == null){
-            return res.status(401).json({'error': 'missing parameters'});
-        }
-        models.Users.findOne({
-        where: { id: idDuBoug }
-        })
-        .then (function(profileInfo){
-            return res.status(201).json({
-                'username': profileInfo.name,
-                'login' : profileInfo.login,
-                'pawn' : profileInfo.piece
-            }) 
-        })
-        .catch(function(err){
-            return res.status(500).json({ 'error': 'cannot fetch user' });
-        });
     },
+   
     
     changeNamePawn: function(req,res) {
         var newLogin = req.body.login;
