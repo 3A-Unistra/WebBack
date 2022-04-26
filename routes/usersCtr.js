@@ -34,7 +34,7 @@ module.exports = {
                         name: name,
                         password: bcryptedPassword,
                         piece: 1,
-                        avatar: "no avatar"
+                        avatar: ""
                     })
                     .then(function(newUser) {
                         return res.status(201).json( {'username': newUser.id})

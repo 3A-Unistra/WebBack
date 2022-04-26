@@ -2,7 +2,7 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('users', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.STRING
       }
     });
-    await queryInterface.createTable('User_friends',{
+    await queryInterface.createTable('user_friends',{
       id: {
         type: Sequelize.INTEGER,
         //defaultValue: Sequelize.INTEGER,
@@ -52,7 +52,7 @@ module.exports = {
 
       }
     });
-    await queryInterface.createTable('User_password_reset_token', {
+    await queryInterface.createTable('user_password_reset_token', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -77,9 +77,9 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
-    await queryInterface.dropTable('User_password_reset_token');
-    await queryInterface.dropTable('User_friends');
+    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('user_password_reset_token');
+    await queryInterface.dropTable('user_friends');
    
    /*  * Add reverting commands here.
      *
