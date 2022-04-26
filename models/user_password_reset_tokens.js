@@ -24,13 +24,14 @@ module.exports = (sequelize, DataTypes) => {
     user_id : {
       type: DataTypes.UUID,
       references: {
-          table: 'Users',
+          table: 'users',
           key: 'id'
       }
     }
   }, {
     sequelize,
     modelName: 'User_password_reset_tokens',
+    tableName: 'user_password_reset_tokens',
     timestamps: false
   });
   return User_password_reset_tokens;
