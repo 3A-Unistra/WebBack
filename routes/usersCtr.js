@@ -363,7 +363,7 @@ module.exports = {
         }
         res.status(401).json({ 'error': 'verifie le mot de pass'});
     },
-   Update : async(req,res) =>{
+    Update : async(req,res) =>{
        var mot = req.body.password;
        let expiry = Date.now() +0 ;
         models.User_password_reset_tokens.findOne({where:{
@@ -397,6 +397,20 @@ module.exports = {
             .catch(function(err){
                 return res.status(507).json({ 'error': 'link invalide or expired'});
         })
-    }
-}
+    },
+    Supcompt : async(req,res,next) => {
+        models.Users.findOne({
+            where:{
+                _id= req.body.id
+            }
+            .deleteOne({_id:req.params.id})
+            .then(function(rfound){
+                res.status(200).json({ 'success': ' compte supprimer'});
+            })
+            .catch(function(err){
+                res.status(401).json({ 'error': 'probleme de suppression'});
+            })
     
+    })
+    }
+}   
