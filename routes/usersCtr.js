@@ -286,26 +286,21 @@ module.exports = {
         });
     },
     forgot: async(req,res, next)=>{    
-        const users = await models.Users.findOne({email: req.body.email})
-        /*.then (function(userFound){
-            next();
-            return;
-        })
-        .catch(function(err){
-            return res.status(507).json({ 'error': 'mail existe pas'});
-        })*/
+        const users = await models.Users.findOne(
+            {email: req.body.email})
         if (!users){
             return res.status(404).json({ 'error': 'No account with this mail exits'});
             
         }
-        let token = await models.User_password_reset_tokens.findOne({user_id: users.id});
+        let token = await models.User_password_reset_tokens.findOne(
+            {user_id: users.id});
         if (token){
             await token.destroy();
         }
         var expireDate = new Date ();
         expireDate.setDate (expireDate.getMinutes () + 1);
         token = await models.User_password_reset_tokens.create({
-            date: Date.now() +6000000, //valide pendant 10 minute
+            date: Date.now() +600000, //valide pendant 10 minute
             user_id: users.id
          })
         //3.send them an email with token 
@@ -324,25 +319,49 @@ module.exports = {
     reset: async(req,res)=>{
         var verif= req.body.token;
         models.User_password_reset_tokens.findOne({
-            where :{id:verif}
+            where :{
+            id:verifd
+        }
         })
-        .then (function(userFound){
-        })
-        .catch(function(err){
-            return res.status(507).json({ 'error': 'token existe pas  '});
+        .then(function(relatifound)
+        {
+            models.Uses.findOne({
+                where:{
+                    id : relationfound.usd 
+                    }
+            })
+             .then(function(relationfoundd){
+                    if(relationfoundd){
+                        bcrypt.hash(mot, 5, function(err, bcryptedPassword) {
+                            relationfoundd.update({
+                                password:bdPassword
+                            })
+                            .then(function() {
+                                return res.status(201).json( 'success')
+                            })
+                            .catch(function(err) {
+                                console.log(err)
+                                return res.status(500).json({'error': 'cannot find modified'});
+                            })
+                        })
+                    }
+                    else {
+                     return res.status(200).json({ 'success': 'probleme de changement'});
+                    }
+                })
         })
 
-       /* if (!tokens){
-            res.status(200).json({ 'error': 'youeen  link'});
-        }
-        res.status(200).json({ 'succes': 'lien valide'});*/
+        .catch(function(err){
+            return res.status(507).json({ 'error': 'link invalide or expired'});
+    })
+        
     },
     confirmedPasswords : async(req,res,next) => {
         if (req.body.password === req.body['confirmpassword']){
             next();
             return;
         }
-        //res.status(200).json({ 'error': 'verifie le mot de pass'});
+        res.status(401).json({ 'error': 'verifie le mot de pass'});
     },
    Update : async(req,res) =>{
        var mot = req.body.password;
