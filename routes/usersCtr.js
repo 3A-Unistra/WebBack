@@ -307,7 +307,7 @@ module.exports = {
          })
         //3.send them an email with token 
         var fullUrl = req.protocol + '://' + req.get('host');
-        const resetURL = `http://localhost:8080/reset/${token.id}`;
+        const resetURL = `${process.env.RESET_URL}/reset/${token.id}`;
         await mail.send({
             users:users,
             subject: 'Password Reset',
@@ -320,7 +320,7 @@ module.exports = {
     },
     reset: async(req,res)=>{
         var verif= req.body.token;
-        models.User_password_reset_tokens.findOne({
+        models.User_password_reset_token.findOne({
             where :{
             id:verifd
         }
