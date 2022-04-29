@@ -6,16 +6,16 @@ const { text } = require("body-parser");
 require('dotenv').config(); // pour accéder au .env
 
 const transport = nodemailer.createTransport({
-    service: 'gmail', 
+    service: process.env.SERVICE_EMAIL, 
     auth:{
-        user: 'strasspoly@gmail.com',
-        pass: "strasspoly123"
+        user: process.env.ADRESS_EMAIL,
+        pass: process.env.PASSWORD_EMAIL
         }
 });
 
 exports.send = async (option)=>{
     const mailOptions = {
-        from : 'strasspoly@gmail.com',
+        from : process.env.ADRESS_EMAIL,
         subject : option.subject,
         to : option.users.email,
         html:option.html,
