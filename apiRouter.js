@@ -16,6 +16,9 @@ exports.router = (function() {
     apiRouter.route('/users/editProfile').post(usersCtr.changeNamePawn);
     apiRouter.route('/users/verifToken').post(usersCtr.verifToken);
 
+    apiRouter.route('/users/forget').post(usersCtr.forgot);
+    apiRouter.route('/users/reset/:token').get(usersCtr.reset);
+    apiRouter.route('/users/reset/:token').post(usersCtr.confirmedPasswords, usersCtr.Update);
     return apiRouter;
 
 })();
