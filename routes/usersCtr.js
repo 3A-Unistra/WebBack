@@ -1,7 +1,9 @@
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils.js');
+var jwt = require('jsonwebtoken');
+
 var models = require('../models');
-const mail = require('../H/mail.js');
+const mail = require('../mail.js');
 const Sequelize = require ('sequelize');
 const Op = Sequelize.Op; 
 require('dotenv').config(); // pour accéder au .env
@@ -14,7 +16,6 @@ module.exports = {
         var login = req.body.login;
         var password = req.body.password;
         var name = req.body.name;
-        console.log(process.env.NODE_ENV)
         if (email == null || login == null || password == null || name == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -74,9 +75,11 @@ module.exports = {
             if(userFound) {
                 bcrypt.compare(password,userFound.password, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
+                        const token = jwtUtils.generateTokenForUser(userFound)
                         return res.status(200).json({
                             'userid': userFound.id,
-                            'token': jwtUtils.generateTokenForUser(userFound)
+                            'token': token,
+                            'expiration': token.expiresIn
                         });
                     } else {
                         return res.status(403).json({'error':'invalid password'});
@@ -89,7 +92,8 @@ module.exports = {
         .catch(function(err){
             return res.status(500).json({ 'error': 'unable to verify user'});
         });
-    },    
+    },
+    
 
     getIds: function(req,res) {
         var ownUsername = req.body.ownName;
@@ -143,7 +147,7 @@ module.exports = {
         .then(function(userFound) {
             if(userFound) {
                 ownId = userFound.id
-                return res.status(201).json( {'ownId': ownId}) // renvoie son propre id
+                return res.status(201).json({'ownId': ownId}) // renvoie son propre id
             } else {
                 return res.status(400).json({'error': 'user not in database'});
             }
@@ -232,27 +236,56 @@ module.exports = {
             return res.status(555).json({'error': 'cannot find relation'});
         })
     },
+    verifToken: function(req,res) {
+        idClient = req.body.idClient;
+
+        const token = req.headers['authorization'].split(' ')[1];
+        const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
+        
+        return res.status(200).json({'success_value': 12});
+    },
     getUserProfile: function(req, res) {
         var username = req.body.username;
+        var idVoulu = req.body.id
+
+        /// TEST TOKEN 
+        //const token = authHeader && authHeader.split(' ')[1]
+        const token = req.headers['authorization'].split(' ')[1];
+        //return res.status(451).json({'token travaillé': token.slice(1,-1),'token dans header': req.headers['authorization']});
+        const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
+        const userId = decodedToken.userId;
+        if (idVoulu && idVoulu !== userId) {
+            return res.status(451).json({'error': 'missing parameters'});
+        } 
+
+        /*var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
 
         if(username == null){
-            return res.status(401).json({'error': 'missing parameters'});
+            return res.status(401).json({'error': 'missing parameters',
+        'return_value': 401});
         }
+        if(!testToken){
+            return res.status(401).json({'error': 'not allowed', 'header value': req.headers['authorization'],
+            'return_value': 401});
+        }*/
+       
         models.Users.findOne({
-        where: { name: username }
+        where: { name: "ra" } // name: username à remettre
         })
         .then (function(profileInfo){
             usernameToShow = profileInfo.name
             return res.status(201).json({
                 'username': profileInfo.name,
                 'login' : profileInfo.login,
-                'pawn' : profileInfo.piece
+                'pawn' : profileInfo.piece,
+                'success' : 12
             }) 
         })
         .catch(function(err){
             return res.status(500).json({ 'error': 'cannot fetch user' });
         });
     },
+   
     
     changeNamePawn: function(req,res) {
         var newLogin = req.body.login;
