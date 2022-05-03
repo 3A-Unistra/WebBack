@@ -1,5 +1,7 @@
 var bcrypt = require('bcrypt');
 var jwtUtils = require('../utils/jwt.utils.js');
+var jwt = require('jsonwebtoken');
+
 var models = require('../models');
 require('dotenv').config(); // pour accéder au .env
 
@@ -72,7 +74,7 @@ module.exports = {
                         return res.status(200).json({
                             'userid': userFound.id,
                             'token': token,
-                            'date expiration': token.expiresIn
+                            'expiration': token.expiresIn
                         });
                     } else {
                         return res.status(403).json({'error':'invalid password'});
@@ -231,15 +233,28 @@ module.exports = {
     },
     getUserProfile: function(req, res) {
         var username = req.body.username;
+        var idVoulu = req.body.id
 
-        var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
+        /// TEST TOKEN 
+        //const token = authHeader && authHeader.split(' ')[1]
+        const token = req.headers['authorization'].split(' ')[1];
+        //return res.status(451).json({'token travaillé': token.slice(1,-1),'token dans header': req.headers['authorization']});
+        const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
+        const userId = decodedToken.userId;
+        if (idVoulu && idVoulu !== userId) {
+            return res.status(451).json({'error': 'missing parameters'});
+        } 
+
+        /*var testToken =jwtUtils.authenticateToken(req.headers['authorization']);
 
         if(username == null){
-            return res.status(401).json({'error': 'missing parameters'});
+            return res.status(401).json({'error': 'missing parameters',
+        'return_value': 401});
         }
         if(!testToken){
-            return res.status(401).json({'error': 'not allowed', 'header value': req.headers['authorization']});
-        }
+            return res.status(401).json({'error': 'not allowed', 'header value': req.headers['authorization'],
+            'return_value': 401});
+        }*/
        
         models.Users.findOne({
         where: { name: "ra" } // name: username à remettre
@@ -249,7 +264,8 @@ module.exports = {
             return res.status(201).json({
                 'username': profileInfo.name,
                 'login' : profileInfo.login,
-                'pawn' : profileInfo.piece
+                'pawn' : profileInfo.piece,
+                'success' : 12
             }) 
         })
         .catch(function(err){

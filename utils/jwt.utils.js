@@ -10,12 +10,13 @@ module.exports = {
     generateTokenForUser: function(userData) {
       return jwt.sign( {
         //mettre ici ce qu'on veut recupérer du token
-        userData
-    },
+        userId: userData.id
+      },
       JWT_SIGN_ACCESS,
-    {
-        expiresIn: '30s'
-    })    },
+      {
+        expiresIn: '10s'
+      })    
+    },
     generateRefreshTokenForUser: function(userData) {
         return jwt.sign( {
             //mettre ici ce qu'on veut recupérer du token
@@ -33,7 +34,8 @@ module.exports = {
     
       jwt.verify(token, process.env.ACCESS_TOKEN, (err,decoded) => {
         if (err) {
-          return res.sendStatus(417).json(err);
+          return false;
+          //return res.sendStatus(417).json(err);
         }
       });
       return true;
