@@ -14,6 +14,8 @@ exports.router = (function() {
     apiRouter.route('/users/unfollow').post(usersCtr.Unfollow);
     apiRouter.route('/users/getProfile').post(usersCtr.getUserProfile);
     apiRouter.route('/users/editProfile').post(usersCtr.changeNamePawn);
+    apiRouter.route('/users/verifToken').post(usersCtr.verifToken);
+
     return apiRouter;
 
 })();
