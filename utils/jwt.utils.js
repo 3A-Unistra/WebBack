@@ -8,8 +8,14 @@ const JWT_SIGN_REFRESH = process.env.REFRESH_TOKEN;
 
 module.exports = {
     generateTokenForUser: function(userData) {
-        return jwt.sign(userData, JWT_SIGN_ACCESS, {expiresIn: '60s'});
+      return jwt.sign( {
+        //mettre ici ce qu'on veut recupérer du token
+        userData
     },
+      JWT_SIGN_ACCESS,
+    {
+        expiresIn: '30s'
+    })    },
     generateRefreshTokenForUser: function(userData) {
         return jwt.sign( {
             //mettre ici ce qu'on veut recupérer du token
@@ -27,7 +33,7 @@ module.exports = {
     
       jwt.verify(token, process.env.ACCESS_TOKEN, (err,decoded) => {
         if (err) {
-          return res.sendStatus(402);
+          return res.sendStatus(417).json(err);
         }
       });
       return true;
