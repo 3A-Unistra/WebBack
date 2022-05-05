@@ -14,7 +14,7 @@ module.exports = {
       },
       JWT_SIGN_ACCESS,
       {
-        expiresIn: '30s'
+        expiresIn: '20m'
       })    
     },
     generateRefreshTokenForUser: function(userData) {
