@@ -129,31 +129,7 @@ module.exports = {
             }
         })
         .catch(function(err){
-            return res.status(507).json({ 'error': 'unable to verify user'});
-        });
-    },
-
-    getOwnId: function(req,res) {
-        var ownUsername = req.body.name;
-        var ownId;
-
-        if (ownUsername == null) {
-            return res.status(400).json({'error': 'missing parameters'});
-        }
-
-        models.Users.findOne({
-            where: { name: ownUsername}
-        })
-        .then(function(userFound) {
-            if(userFound) {
-                ownId = userFound.id
-                return res.status(201).json({'ownId': ownId}) // renvoie son propre id
-            } else {
-                return res.status(400).json({'error': 'user not in database'});
-            }
-        })
-        .catch(function(err){
-            return res.status(507).json({ 'error': 'unable to verify user'});
+            return res.status(407).json({ 'error': 'unable to verify user'});
         });
     },
 
@@ -237,14 +213,6 @@ module.exports = {
         })
     },
     verifToken: function(req,res) {
-        idClient = req.body.idClient;
-
-        const token = req.headers['authorization'].split(' ')[1];
-        const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
-        
-        return res.status(200).json({'success_value': 12});
-    },
-    verifRequest: function(req,res) {
         idClient = req.body.idClient;
 
         const token = req.headers['authorization'].split(' ')[1];
