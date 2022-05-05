@@ -15,6 +15,7 @@ exports.router = (function() {
     apiRouter.route('/users/getProfile').post(usersCtr.getUserProfile);
     apiRouter.route('/users/editProfile').post(usersCtr.changeNamePawn);
     apiRouter.route('/users/verifToken').post(usersCtr.verifToken);
+    apiRouter.route('/users/verifRequest').post(usersCtr.verifRequest);
 
     apiRouter.route('/users/forget').post(usersCtr.forgot);
     apiRouter.route('/users/reset/:token').get(usersCtr.reset);
