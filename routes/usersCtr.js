@@ -239,7 +239,7 @@ module.exports = {
                 'username': profileInfo.name,
                 'login' : profileInfo.login,
                 'pawn' : profileInfo.piece,
-                'success' : 12
+                'success' : true
             }) 
         })
         .catch(function(err){
