@@ -218,7 +218,7 @@ module.exports = {
         const token = req.headers['authorization'].split(' ')[1];
         const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
         
-        return res.status(200).json({'success_value': 12});
+        return res.status(200).json({'success_value': true});
     },
     getUserProfile: function(req, res) {
         var username = req.body.username; // username à stalker
