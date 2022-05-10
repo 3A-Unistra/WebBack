@@ -228,10 +228,10 @@ module.exports = {
         //const token = authHeader && authHeader.split(' ')[1]
         const token = req.headers['authorization'].split(' ')[1];
         const decodedToken = jwt.verify(token.slice(1,-1), process.env.ACCESS_TOKEN);
-        const userId = decodedToken.userId;
+        /*const userId = decodedToken.userId;
         if (idVoulu && idVoulu !== userId) {
             return res.status(451).json({'error': 'missing parameters'});
-        } 
+        } */
        
         models.Users.findOne({
         where: { name: username }
@@ -242,7 +242,7 @@ module.exports = {
                 'username': profileInfo.name,
                 'login' : profileInfo.login,
                 'pawn' : profileInfo.piece,
-                'success' : 12
+                'success' : true
             }) 
         })
         .catch(function(err){
