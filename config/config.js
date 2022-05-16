@@ -17,5 +17,6 @@ module.exports = {
     "port": process.env.POSTGRES_SERVICE_PORT,
     "dialect": process.env.POSTGRES_DIALECT,
     "storage": process.env.POSTGRES_STORAGE,
+    "logging": false
   }
 }
