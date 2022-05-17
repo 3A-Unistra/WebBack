@@ -286,7 +286,7 @@ module.exports = {
         const users = await models.Users.findOne(
             {email: req.body.email})
         if (!users){
-            return res.status(404).json({ 'error': 'No account with this mail exits'});
+            return res.status(404).json({ 'error': 'No account with this email exists'});
             
         }
         let token = await models.User_password_reset_tokens.findOne(
@@ -301,16 +301,15 @@ module.exports = {
             user_id: users.id
          })
         //3.send them an email with token 
-        var fullUrl = req.protocol + '://' + req.get('host');
         const resetURL = `${process.env.RESET_URL}/reset/${token.id}`;
         await mail.send({
             users:users,
-            subject: 'Password Reset',
+            subject: 'Réinitialiser votre mot de passe',
             resetURL:resetURL,
-            html:`<h1>Lien de modification de mot de passe </h1> <p>vous avez demanee de modifier votre mot de passe merci de clique sur lien </p> <a href= "${resetURL}" >cliquer sur le lien </a>`,
+            html:`<h1>Vous avez oublié votre mot de passe?</h1><p>Ce n'est pas grave, ça arrive! Appuyez sur le bouton ci-dessous pour le réinitialiser.</p><a href="${resetURL}" target="_blank" style="padding: 8px 12px; border: 1px solid #ED2939;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display:inline-block;">Réinitialiser mon mot de passe</a>`,
             text:resetURL 
         });
-        return res.status(200).json({ 'success': 'you have been emailed a password reset link'});
+        return res.status(200).json({ 'success': 'You have been emailed a link to reset your password.'});
             //4 redirect page de login 
     },
     reset: async(req,res)=>{
