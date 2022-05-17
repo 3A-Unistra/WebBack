@@ -8,14 +8,14 @@ require('dotenv').config(); // pour accéder au .env
 const transport = nodemailer.createTransport({
     service: process.env.SERVICE_EMAIL, 
     auth:{
-        user: process.env.ADRESS_EMAIL,
-        pass: process.env.PASSWORD_EMAIL
+        user: 'strasspoly@gmail.com',
+        pass: "strasspoly123"
         }
 });
 
 exports.send = async (option)=>{
     const mailOptions = {
-        from : process.env.ADRESS_EMAIL,
+        from : 'strasspoly@gmail.com',
         subject : option.subject,
         to : option.users.email,
         html:option.html,

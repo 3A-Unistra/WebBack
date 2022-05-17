@@ -380,7 +380,7 @@ module.exports = {
                                 })
                                 .catch(function(err) {
                                     console.log(err)
-                                    return res.status(500).json({'error': 'cannot find modified'});
+                                    return res.status(403).json({'error': 'cannot find modified'});
                                 })
                             })
                         }
